@@ -2,16 +2,16 @@
 
 export default function Companies({ filteredCompanies, toggleApplied, toggleContacted, setEditingCompany, deleteCompany, setShowAddCompany }) {
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Companies</h1>
             <p className="text-gray-600">Manage IT companies offering job opportunities</p>
           </div>
           <button 
             onClick={() => setShowAddCompany(true)} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium w-full sm:w-auto"
           >
             <span className="text-lg">+</span>
             Add Company
@@ -22,8 +22,8 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
           {filteredCompanies && filteredCompanies.length > 0 ? (
             filteredCompanies.map((company) => (
               <div key={company.id} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
-                <div className="flex justify-between items-start gap-3">
-                  <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
                     <div className="bg-blue-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
                       <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 rounded flex items-center justify-center">
                         <span className="text-white text-xs sm:text-sm font-bold">🏢</span>
@@ -31,9 +31,9 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-xl font-bold text-gray-900">{company.name}</h2>
-                        <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <h2 className="text-xl font-bold text-gray-900 break-words">{company.name}</h2>
+                        <span className={`px-3 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
                           company.status === 'Active' ? 'bg-blue-100 text-blue-800' :
                           company.status === 'Partnered' ? 'bg-green-100 text-green-800' :
                           company.status === 'Applied' ? 'bg-yellow-100 text-yellow-800' :
@@ -45,42 +45,42 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                        {company.industry && <span>{company.industry}</span>}
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
+                        {company.industry && <span className="whitespace-nowrap">{company.industry}</span>}
                         {company.industry && company.size && <span>•</span>}
-                        {company.size && <span>{company.size} employees</span>}
+                        {company.size && <span className="whitespace-nowrap">{company.size} employees</span>}
                         {(company.industry || company.size) && company.founded && <span>•</span>}
-                        {company.founded && <span>Founded {company.founded}</span>}
+                        {company.founded && <span className="whitespace-nowrap">Founded {company.founded}</span>}
                       </div>
                       
                       {company.description && (
-                        <p className="text-gray-700 mb-4 leading-relaxed">{company.description}</p>
+                        <p className="text-gray-700 mb-4 leading-relaxed break-words">{company.description}</p>
                       )}
                       
                       <div className="mt-4 space-y-3">
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 text-sm text-gray-600">
                           {company.location && (
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 min-w-0">
                               <span>📍</span>
-                              <span>{company.location}</span>
+                              <span className="break-all">{company.location}</span>
                             </div>
                           )}
                           {company.website && (
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 min-w-0">
                               <span>🌐</span>
-                              <a href={company.website} className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">
+                              <a href={company.website} className="text-blue-600 hover:text-blue-800 break-all" target="_blank" rel="noopener noreferrer">
                                 Website
                               </a>
                             </div>
                           )}
                           {company.phone && (
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 min-w-0">
                               <span>📞</span>
-                              <span>{company.phone}</span>
+                              <span className="break-all">{company.phone}</span>
                             </div>
                           )}
                           {company.email && (
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 min-w-0">
                               <span>✉️</span>
                               <a href={`mailto:${company.email}`} className="text-blue-600 hover:text-blue-800 break-all">
                                 {company.email}
@@ -102,7 +102,7 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                           ) : (
                             <button
                               onClick={() => toggleApplied(company.id)}
-                              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors sm:w-auto sm:ml-auto sm:block"
+                              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                             >
                               Apply
                             </button>
@@ -112,7 +112,7 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-1 sm:gap-2 flex-shrink-0">
+                  <div className="flex items-start gap-1 sm:gap-2 flex-shrink-0 mt-4 sm:mt-0 w-full sm:w-auto justify-end">
                     <button 
                       onClick={() => setEditingCompany(company)} 
                       className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

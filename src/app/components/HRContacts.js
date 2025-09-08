@@ -1,17 +1,17 @@
 'use client';
 
-export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setShowAddHR, toggleContacted }) {
+export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setShowAddHR }) {
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">HR Contacts</h1>
             <p className="text-gray-600">Manage HR contacts for job opportunities</p>
           </div>
           <button 
             onClick={() => setShowAddHR(true)} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium w-full sm:w-auto"
           >
             <span className="text-lg">+</span>
             Add HR Contact
@@ -20,19 +20,19 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
 
         <div className="space-y-4">
           {filteredHrs.map((hr) => (
-            <div key={hr.id} className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex justify-between items-start">
-                <div className="flex items-start gap-4">
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">👤</span>
+            <div key={hr.id} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
+                  <div className="bg-blue-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 rounded flex items-center justify-center">
+                      <span className="text-white text-xs sm:text-sm font-bold">👤</span>
                     </div>
                   </div>
                   
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-xl font-bold text-gray-900">{hr.name}</h2>
-                      <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                      <h2 className="text-xl font-bold text-gray-900 break-words">{hr.name}</h2>
+                      <span className={`px-3 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
                         hr.status === 'Active' ? 'bg-green-100 text-green-800' :
                         hr.status === 'Responsive' ? 'bg-blue-100 text-blue-800' :
                         hr.status === 'Contacted' ? 'bg-yellow-100 text-yellow-800' :
@@ -43,42 +43,42 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
                       </span>
                     </div>
                     
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                      <span>{hr.jobTitle}</span>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
+                      <span className="whitespace-nowrap">{hr.jobTitle}</span>
                       {hr.company && (
                         <>
                           <span>•</span>
-                          <span>{hr.company}</span>
+                          <span className="whitespace-nowrap">{hr.company}</span>
                         </>
                       )}
                       {hr.department && (
                         <>
                           <span>•</span>
-                          <span>{hr.department}</span>
+                          <span className="whitespace-nowrap">{hr.department}</span>
                         </>
                       )}
                     </div>
                     
                     {hr.authority && (
-                      <p className="text-gray-700 mb-2">
+                      <p className="text-gray-700 mb-2 break-words">
                         <span className="font-medium">Hiring Authority:</span> {hr.authority}
                       </p>
                     )}
                     
                     {hr.specializations && (
-                      <p className="text-gray-700 mb-2">
+                      <p className="text-gray-700 mb-2 break-words">
                         <span className="font-medium">Specializations:</span> {hr.specializations}
                       </p>
                     )}
                     
                     {hr.notes && (
-                      <p className="text-gray-700 mb-4 leading-relaxed">{hr.notes}</p>
+                      <p className="text-gray-700 mb-4 leading-relaxed break-words">{hr.notes}</p>
                     )}
                     
                     <div className="mt-4 space-y-3">
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                      <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 text-sm text-gray-600">
                         {hr.email && (
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 min-w-0">
                             <span>✉️</span>
                             <a href={`mailto:${hr.email}`} className="text-blue-600 hover:text-blue-800 break-all">
                               {hr.email}
@@ -86,15 +86,15 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
                           </div>
                         )}
                         {hr.phone && (
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 min-w-0">
                             <span>📞</span>
-                            <span>{hr.phone}</span>
+                            <span className="break-all">{hr.phone}</span>
                           </div>
                         )}
                         {hr.linkedin && (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 min-w-0">
                             <span>🔗</span>
-                            <a href={hr.linkedin} className="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">
+                            <a href={hr.linkedin} className="text-blue-600 hover:text-blue-800 break-all" target="_blank" rel="noopener noreferrer">
                               LinkedIn
                             </a>
                           </div>
@@ -102,7 +102,7 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
                       </div>
                       
                       <div className="w-full mt-2">
-                        {hr.contacted === true ? (
+                        {(hr.contacted === true || hr.contacted === 'true') ? (
                           <div className="flex justify-center">
                             <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full flex items-center gap-2">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
                         ) : (
                           <button
                             onClick={() => toggleContacted(hr.id)}
-                            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors sm:w-auto sm:ml-auto sm:block"
+                            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                           >
                             Contact
                           </button>
@@ -124,7 +124,7 @@ export default function HRContacts({ filteredHrs, setEditingHR, deleteHR, setSho
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-1 sm:gap-2 flex-shrink-0">
+                <div className="flex items-start gap-1 sm:gap-2 flex-shrink-0 mt-4 sm:mt-0 w-full sm:w-auto justify-end">
                   <button 
                     onClick={() => setEditingHR(hr)} 
                     className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
