@@ -431,16 +431,6 @@ export default function Dashboard() {
             Companies
           </button>
           <button
-            onClick={() => setTab('companies')}
-            className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-              tab === 'job-roles' 
-                ? 'bg-white text-gray-900 border-b-2 border-blue-600' 
-                : 'bg-gray-50 text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            Job Roles
-          </button>
-          <button
             onClick={() => setTab('hr')}
             className={`flex-1 px-6 py-4 text-sm font-medium rounded-r-lg transition-colors ${
               tab === 'hr' 
