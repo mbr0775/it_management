@@ -54,7 +54,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Job Title</label>
             <input 
               name="jobTitle" 
-              defaultValue={editingCompany.job_title} 
+              defaultValue={editingCompany.job_title || ''} 
               placeholder="e.g. Software Developer, Data Analyst"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
             />
@@ -63,7 +63,8 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Industry</label>
             <select 
               name="industry" 
-              defaultValue={editingCompany.industry} 
+              defaultValue={editingCompany.industry || ''} 
+              key={editingCompany.industry} 
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
             >
               <option value="">Select industry</option>
@@ -104,22 +105,22 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-2">Company Size</label>
-            <select name="size" defaultValue={editingCompany.size} className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
+            <select name="size" defaultValue={editingCompany.size || ''} key={editingCompany.size} className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
               <option value="">Select company size</option>
-              <option>1-10</option>
-              <option>11-50</option>
-              <option>51-200</option>
-              <option>201-500</option>
-              <option>501-1000</option>
-              <option>1001-5000</option>
-              <option>5000+</option>
+              <option value="1-10">1-10</option>
+              <option value="11-50">11-50</option>
+              <option value="51-200">51-200</option>
+              <option value="201-500">201-500</option>
+              <option value="501-1000">501-1000</option>
+              <option value="1001-5000">1001-5000</option>
+              <option value="5000+">5000+</option>
             </select>
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-2">Founded Year</label>
             <input 
               name="founded" 
-              defaultValue={editingCompany.founded} 
+              defaultValue={editingCompany.founded || ''} 
               placeholder="e.g. 2020"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
             />
@@ -128,7 +129,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Location</label>
             <input 
               name="location" 
-              defaultValue={editingCompany.location} 
+              defaultValue={editingCompany.location || ''} 
               placeholder="City, State/Country"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
             />
@@ -137,7 +138,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Website</label>
             <input 
               name="website" 
-              defaultValue={editingCompany.website} 
+              defaultValue={editingCompany.website || ''} 
               type="url"
               placeholder="https://company.com"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
@@ -147,7 +148,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Phone</label>
             <input 
               name="phone" 
-              defaultValue={editingCompany.phone} 
+              defaultValue={editingCompany.phone || ''} 
               type="tel"
               placeholder="+974-xxxx-xxxx"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
@@ -157,7 +158,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Contact Email</label>
             <input 
               name="email" 
-              defaultValue={editingCompany.email} 
+              defaultValue={editingCompany.email || ''} 
               type="email"
               placeholder="hr@company.com"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
@@ -167,28 +168,28 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <label className="block text-gray-700 font-medium mb-2">Resume Deadline</label>
             <input 
               name="resumeDeadline" 
-              defaultValue={editingCompany.resume_deadline_date} 
+              defaultValue={editingCompany.resume_deadline_date || ''} 
               type="date"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
             />
           </div>
           <div className="col-span-2">
-            <label className="block text-gray-700 font-medium mb-2">Status</label>
-            <select name="status" defaultValue={editingCompany.status} className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
+            <label className="block text-gray-700 font-medium mb-2">Status *</label>
+            <select name="status" defaultValue={editingCompany.status || ''} key={editingCompany.status} required className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
               <option value="">Select status</option>
-              <option>Active</option>
-              <option>Partnered</option>
-              <option>Prospective</option>
-              <option>Applied</option>
-              <option>Interviewed</option>
-              <option>Not Interested</option>
+              <option value="Active">Active</option>
+              <option value="Partnered">Partnered</option>
+              <option value="Prospective">Prospective</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewed">Interviewed</option>
+              <option value="Not Interested">Not Interested</option>
             </select>
           </div>
           <div className="col-span-2">
             <label className="block text-gray-700 font-medium mb-2">Description</label>
             <textarea 
               name="description" 
-              defaultValue={editingCompany.description} 
+              defaultValue={editingCompany.job_description || ''} 
               rows="3" 
               placeholder="Brief description of the company..."
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
@@ -201,7 +202,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
             <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full sm:w-auto">
               Save Changes
             </button>
-          </div>
+            </div>
         </form>
       </div>
     </div>
