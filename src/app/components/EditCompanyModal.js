@@ -30,7 +30,8 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               phone: formData.get('phone'),
               email: formData.get('email'),
               status: formData.get('status'),
-              description: formData.get('description'),
+              job_description: formData.get('description'),
+              resume_deadline_date: formData.get('resumeDeadline'),
               contacted: editingCompany.contacted,
               applied: editingCompany.applied,
               created_at: editingCompany.created_at,
@@ -160,6 +161,15 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               type="email"
               placeholder="hr@company.com"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Resume Deadline</label>
+            <input 
+              name="resumeDeadline" 
+              defaultValue={editingCompany.resume_deadline_date} 
+              type="date"
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
             />
           </div>
           <div className="col-span-2">

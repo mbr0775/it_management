@@ -31,7 +31,8 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
         phone: formData.get('phone') || null,
         email: formData.get('email') || null,
         status: formData.get('status'),
-        description: formData.get('description') || null,
+        job_description: formData.get('description') || null,
+        resume_deadline_date: formData.get('resumeDeadline') || null,
         contacted: false,
         applied: false,
         created_at: new Date().toISOString()
@@ -238,6 +239,15 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
               maxLength={255}
               disabled={loading}
               className="w-full border border-gray-300 p-2 rounded-md placeholder:text-gray-400 text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Resume Deadline</label>
+            <input 
+              name="resumeDeadline" 
+              type="date"
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
             />
           </div>
           <div className="col-span-2">

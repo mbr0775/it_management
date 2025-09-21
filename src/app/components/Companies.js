@@ -1,6 +1,36 @@
 'use client';
 
 export default function Companies({ filteredCompanies, toggleApplied, toggleContacted, setEditingCompany, deleteCompany, setShowAddCompany }) {
+  
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  // Helper function to check if deadline is approaching or passed
+  const getDeadlineStatus = (dateString) => {
+    if (!dateString) return null;
+    
+    const deadlineDate = new Date(dateString);
+    const today = new Date();
+    const diffTime = deadlineDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'passed';
+    if (diffDays <= 3) return 'urgent';
+    if (diffDays <= 7) return 'soon';
+    return 'normal';
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
@@ -94,6 +124,21 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                               <a href={`mailto:${company.email}`} className="text-blue-600 hover:text-blue-800 break-all">
                                 {company.email}
                               </a>
+                            </div>
+                          )}
+                          {company.resume_deadline_date && (
+                            <div className="flex items-center gap-1 min-w-0">
+                              <span>📅</span>
+                              <span className={`break-all ${
+                                getDeadlineStatus(company.resume_deadline_date) === 'passed' ? 'text-red-600 font-medium' :
+                                getDeadlineStatus(company.resume_deadline_date) === 'urgent' ? 'text-orange-600 font-medium' :
+                                getDeadlineStatus(company.resume_deadline_date) === 'soon' ? 'text-yellow-600 font-medium' :
+                                'text-gray-600'
+                              }`}>
+                                Deadline: {formatDate(company.resume_deadline_date)}
+                                {getDeadlineStatus(company.resume_deadline_date) === 'passed' && ' (Passed)'}
+                                {getDeadlineStatus(company.resume_deadline_date) === 'urgent' && ' (Urgent)'}
+                              </span>
                             </div>
                           )}
                         </div>
