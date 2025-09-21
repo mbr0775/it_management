@@ -44,6 +44,15 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                           {company.status}
                         </span>
                       </div>
+
+                      {/* Job Title Section */}
+                      {company.job_title && (
+                        <div className="mb-3">
+                          <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                            💼 {company.job_title}
+                          </span>
+                        </div>
+                      )}
                       
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
                         {company.industry && <span className="whitespace-nowrap">{company.industry}</span>}

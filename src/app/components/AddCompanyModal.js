@@ -22,6 +22,7 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
       // Prepare the company data according to your database schema
       const companyData = {
         name: formData.get('name'),
+        job_title: formData.get('jobTitle') || null,
         industry: formData.get('industry') || null,
         size: formData.get('size') || null,
         founded: formData.get('founded') || null,
@@ -31,7 +32,6 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
         email: formData.get('email') || null,
         status: formData.get('status'),
         description: formData.get('description') || null,
-        application_notes: formData.get('applicationNotes') || null,
         contacted: false,
         applied: false,
         created_at: new Date().toISOString()
@@ -118,6 +118,16 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
             />
           </div>
           <div>
+            <label className="block text-gray-700 font-medium mb-2">Job Title</label>
+            <input 
+              name="jobTitle" 
+              placeholder="e.g. Software Developer, Data Analyst" 
+              maxLength={255}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md placeholder:text-gray-400 text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
+            />
+          </div>
+          <div>
             <label className="block text-gray-700 font-medium mb-2">Industry</label>
             <select 
               name="industry" 
@@ -125,14 +135,39 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
               className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               <option value="" className="text-gray-400">Select industry</option>
-              <option value="Software Development" className="text-gray-900">Software Development</option>
-              <option value="Technology Consulting" className="text-gray-900">Technology Consulting</option>
-              <option value="Financial Services" className="text-gray-900">Financial Services</option>
-              <option value="Healthcare" className="text-gray-900">Healthcare</option>
+              <option value="Aerospace & Defense" className="text-gray-900">Aerospace & Defense</option>
+              <option value="Agriculture & Food" className="text-gray-900">Agriculture & Food</option>
+              <option value="Automotive" className="text-gray-900">Automotive</option>
+              <option value="Aviation" className="text-gray-900">Aviation</option>
+              <option value="Banking & Finance" className="text-gray-900">Banking & Finance</option>
+              <option value="Biotechnology" className="text-gray-900">Biotechnology</option>
+              <option value="Construction & Real Estate" className="text-gray-900">Construction & Real Estate</option>
+              <option value="Consulting" className="text-gray-900">Consulting</option>
               <option value="E-commerce" className="text-gray-900">E-commerce</option>
-              <option value="Manufacturing" className="text-gray-900">Manufacturing</option>
               <option value="Education" className="text-gray-900">Education</option>
+              <option value="Energy & Utilities" className="text-gray-900">Energy & Utilities</option>
+              <option value="Engineering" className="text-gray-900">Engineering</option>
+              <option value="Entertainment & Media" className="text-gray-900">Entertainment & Media</option>
+              <option value="Financial Services" className="text-gray-900">Financial Services</option>
+              <option value="Government & Public Sector" className="text-gray-900">Government & Public Sector</option>
+              <option value="Healthcare" className="text-gray-900">Healthcare</option>
+              <option value="Hospitality & Tourism" className="text-gray-900">Hospitality & Tourism</option>
+              <option value="Insurance" className="text-gray-900">Insurance</option>
+              <option value="Internet & Technology" className="text-gray-900">Internet & Technology</option>
+              <option value="Legal Services" className="text-gray-900">Legal Services</option>
+              <option value="Logistics & Transportation" className="text-gray-900">Logistics & Transportation</option>
+              <option value="Manufacturing" className="text-gray-900">Manufacturing</option>
               <option value="Marketing & Advertising" className="text-gray-900">Marketing & Advertising</option>
+              <option value="Mining & Metals" className="text-gray-900">Mining & Metals</option>
+              <option value="Non-profit" className="text-gray-900">Non-profit</option>
+              <option value="Oil & Gas" className="text-gray-900">Oil & Gas</option>
+              <option value="Pharmaceuticals" className="text-gray-900">Pharmaceuticals</option>
+              <option value="Retail" className="text-gray-900">Retail</option>
+              <option value="Software Development" className="text-gray-900">Software Development</option>
+              <option value="Sports & Recreation" className="text-gray-900">Sports & Recreation</option>
+              <option value="Technology Consulting" className="text-gray-900">Technology Consulting</option>
+              <option value="Telecommunications" className="text-gray-900">Telecommunications</option>
+              <option value="Textiles & Apparel" className="text-gray-900">Textiles & Apparel</option>
             </select>
           </div>
           <div>
@@ -188,7 +223,7 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
             <input 
               name="phone" 
               type="tel"
-              placeholder="+1-555-0123" 
+              placeholder="+974-xxxx-xxxx" 
               maxLength={50}
               disabled={loading}
               className="w-full border border-gray-300 p-2 rounded-md placeholder:text-gray-400 text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
@@ -227,16 +262,6 @@ export default function AddCompanyModal({ addCompany, setShowAddCompany }) {
             <textarea 
               name="description" 
               placeholder="Brief description of the company..." 
-              rows="3" 
-              disabled={loading}
-              className="w-full border border-gray-300 p-2 rounded-md placeholder:text-gray-400 text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="block text-gray-700 font-medium mb-2">Application Notes</label>
-            <textarea 
-              name="applicationNotes" 
-              placeholder="Notes about applications, interviews, etc...." 
               rows="3" 
               disabled={loading}
               className="w-full border border-gray-300 p-2 rounded-md placeholder:text-gray-400 text-gray-900 focus:text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed" 
