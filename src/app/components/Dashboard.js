@@ -1,3 +1,5 @@
+'use client';
+
 import Overview from './Overview';
 import Companies from './Companies';
 import HRContacts from './HRContacts';
@@ -25,6 +27,7 @@ export default function Dashboard() {
   const [showMenu, setShowMenu] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showAppliedModal, setShowAppliedModal] = useState(false);
   const [filters, setFilters] = useState({
     industry: '',
     status: '',
@@ -140,6 +143,7 @@ export default function Dashboard() {
       console.error('Error toggling contacted:', error);
     } else {
       setCompanies(companies.map((c) => (c.id === id ? { ...c, contacted: newValue } : c)));
+      setFilters(prev => ({ ...prev, contacted: '' }));
     }
   };
 
@@ -157,6 +161,7 @@ export default function Dashboard() {
       console.error('Error toggling applied:', error);
     } else {
       setCompanies(companies.map((c) => (c.id === id ? { ...c, applied: newValue } : c)));
+      setFilters(prev => ({ ...prev, applied: '' }));
     }
   };
 
@@ -1010,13 +1015,23 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => setTab('hr')}
-            className={`flex-1 px-6 py-4 text-sm font-medium rounded-r-lg transition-colors ${
+            className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
               tab === 'hr' 
                 ? 'bg-white text-gray-900 border-b-2 border-blue-600' 
                 : 'bg-gray-50 text-gray-500 hover:text-gray-700 hover:bg-gray-100'
             }`}
           >
             HR Contacts
+          </button>
+          <button
+            onClick={() => setTab('applied')}
+            className={`flex-1 px-6 py-4 text-sm font-medium rounded-r-lg transition-colors ${
+              tab === 'applied' 
+                ? 'bg-white text-gray-900 border-b-2 border-blue-600' 
+                : 'bg-gray-50 text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Applied Jobs
           </button>
         </div>
       </div>
@@ -1027,7 +1042,7 @@ export default function Dashboard() {
             {/* Stats Cards - Now using actual data */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Total Companies */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 cursor-pointer" onClick={() => setTab('companies')}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-medium text-gray-600">Total Companies</h3>
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -1041,7 +1056,7 @@ export default function Dashboard() {
               </div>
 
               {/* Companies Contacted/Applied */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 cursor-pointer" onClick={() => setShowAppliedModal(true)}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-medium text-gray-600">Applied/Contacted</h3>
                   <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -1055,7 +1070,7 @@ export default function Dashboard() {
               </div>
 
               {/* HR Contacts */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 cursor-pointer" onClick={() => setTab('hr')}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-medium text-gray-600">HR Contacts</h3>
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -1144,7 +1159,52 @@ export default function Dashboard() {
             setShowAddHR={setShowAddHR}
           />
         )}
+
+        {tab === 'applied' && (
+          <Companies
+            filteredCompanies={filteredCompanies.filter(c => c.applied)}
+            toggleApplied={toggleApplied}
+            toggleContacted={toggleContacted}
+            setEditingCompany={setEditingCompany}
+            deleteCompany={deleteCompany}
+            setShowAddCompany={setShowAddCompany}
+            title="Applied Jobs"
+            description="View and manage your applied job opportunities"
+            emptyTitle="No applied jobs found"
+            emptyDescription="You haven't applied to any jobs yet. Browse companies to find opportunities."
+            showAdd={false}
+          />
+        )}
       </main>
+
+      {/* Applied/Contacted Modal */}
+      {showAppliedModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto relative">
+            <button 
+              onClick={() => setShowAppliedModal(false)} 
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors z-50"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <Companies
+              filteredCompanies={companies.filter(c => c.applied || c.contacted)}
+              toggleApplied={toggleApplied}
+              toggleContacted={toggleContacted}
+              setEditingCompany={setEditingCompany}
+              deleteCompany={deleteCompany}
+              setShowAddCompany={() => {}}
+              title="Applied and Contacted Companies"
+              description="Companies you have applied to or contacted"
+              emptyTitle="No applied or contacted companies"
+              emptyDescription="You haven't applied to or contacted any companies yet."
+              showAdd={false}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Modals */}
       {showAddCompany && (

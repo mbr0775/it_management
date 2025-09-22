@@ -1,7 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+
 export default function Companies({ filteredCompanies, toggleApplied, toggleContacted, setEditingCompany, deleteCompany, setShowAddCompany }) {
   
+  const [selectedCompany, setSelectedCompany] = useState(null);
+
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -31,6 +35,18 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
     return 'normal';
   };
 
+  // Helper to get status badge classes
+  const getStatusClasses = (status) => {
+    return `px-3 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
+      status === 'Active' ? 'bg-blue-100 text-blue-800' :
+      status === 'Partnered' ? 'bg-green-100 text-green-800' :
+      status === 'Applied' ? 'bg-yellow-100 text-yellow-800' :
+      status === 'Interviewed' ? 'bg-purple-100 text-purple-800' :
+      status === 'Not Interested' ? 'bg-red-100 text-red-800' :
+      'bg-gray-100 text-gray-800'
+    }`;
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
@@ -53,7 +69,10 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
             filteredCompanies.map((company) => (
               <div key={company.id} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
+                  <div 
+                    className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full cursor-pointer"
+                    onClick={() => setSelectedCompany(company)}
+                  >
                     <div className="bg-blue-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
                       <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 rounded flex items-center justify-center">
                         <span className="text-white text-xs sm:text-sm font-bold">🏢</span>
@@ -63,14 +82,7 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-3 mb-2">
                         <h2 className="text-xl font-bold text-gray-900 break-words">{company.name}</h2>
-                        <span className={`px-3 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
-                          company.status === 'Active' ? 'bg-blue-100 text-blue-800' :
-                          company.status === 'Partnered' ? 'bg-green-100 text-green-800' :
-                          company.status === 'Applied' ? 'bg-yellow-100 text-yellow-800' :
-                          company.status === 'Interviewed' ? 'bg-purple-100 text-purple-800' :
-                          company.status === 'Not Interested' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
+                        <span className={getStatusClasses(company.status)}>
                           {company.status}
                         </span>
                       </div>
@@ -155,7 +167,10 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                             </div>
                           ) : (
                             <button
-                              onClick={() => toggleApplied(company.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleApplied(company.id);
+                              }}
                               className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                             >
                               Apply
@@ -208,6 +223,175 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
           )}
         </div>
       </div>
+
+      {/* Company Details Modal */}
+      {selectedCompany && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+            <button 
+              onClick={() => setSelectedCompany(null)} 
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <div className="p-6 sm:p-8">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="bg-blue-100 p-3 rounded-lg flex-shrink-0">
+                  <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                    <span className="text-white text-lg font-bold">🏢</span>
+                  </div>
+                </div>
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{selectedCompany.name}</h2>
+                  <span className={`mt-2 inline-block ${getStatusClasses(selectedCompany.status)}`}>
+                    {selectedCompany.status}
+                  </span>
+                </div>
+              </div>
+
+              {selectedCompany.job_title && (
+                <div className="mb-6">
+                  <span className="inline-flex items-center px-4 py-2 text-base font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                    💼 {selectedCompany.job_title}
+                  </span>
+                </div>
+              )}
+
+              {selectedCompany.description && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+                  <p className="text-gray-700 leading-relaxed">{selectedCompany.description}</p>
+                </div>
+              )}
+
+              {selectedCompany.job_description && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Job Description</h3>
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedCompany.job_description}</p>
+                </div>
+              )}
+
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Details</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+                  {selectedCompany.industry && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">Industry:</span>
+                      <span>{selectedCompany.industry}</span>
+                    </div>
+                  )}
+                  {selectedCompany.size && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">Size:</span>
+                      <span>{selectedCompany.size} employees</span>
+                    </div>
+                  )}
+                  {selectedCompany.founded && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">Founded:</span>
+                      <span>{selectedCompany.founded}</span>
+                    </div>
+                  )}
+                  {selectedCompany.location && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">📍 Location:</span>
+                      <span>{selectedCompany.location}</span>
+                    </div>
+                  )}
+                  {selectedCompany.website && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">🌐 Website:</span>
+                      <a href={selectedCompany.website} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                        {selectedCompany.website}
+                      </a>
+                    </div>
+                  )}
+                  {selectedCompany.phone && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">📞 Phone:</span>
+                      <span>{selectedCompany.phone}</span>
+                    </div>
+                  )}
+                  {selectedCompany.email && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">✉️ Email:</span>
+                      <a href={`mailto:${selectedCompany.email}`} className="text-blue-600 hover:underline">
+                        {selectedCompany.email}
+                      </a>
+                    </div>
+                  )}
+                  {selectedCompany.resume_deadline_date && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">📅 Deadline:</span>
+                      <span className={`${
+                        getDeadlineStatus(selectedCompany.resume_deadline_date) === 'passed' ? 'text-red-600' :
+                        getDeadlineStatus(selectedCompany.resume_deadline_date) === 'urgent' ? 'text-orange-600' :
+                        getDeadlineStatus(selectedCompany.resume_deadline_date) === 'soon' ? 'text-yellow-600' :
+                        'text-gray-700'
+                      }`}>
+                        {formatDate(selectedCompany.resume_deadline_date)}
+                        {getDeadlineStatus(selectedCompany.resume_deadline_date) === 'passed' && ' (Passed)'}
+                        {getDeadlineStatus(selectedCompany.resume_deadline_date) === 'urgent' && ' (Urgent)'}
+                        {getDeadlineStatus(selectedCompany.resume_deadline_date) === 'soon' && ' (Soon)'}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Applied:</span>
+                    <span className={selectedCompany.applied ? 'text-green-600' : 'text-red-600'}>
+                      {selectedCompany.applied ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500">Contacted:</span>
+                    <span className={selectedCompany.contacted ? 'text-green-600' : 'text-red-600'}>
+                      {selectedCompany.contacted ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                {!selectedCompany.applied && (
+                  <button
+                    onClick={() => {
+                      toggleApplied(selectedCompany.id);
+                      setSelectedCompany(null);
+                    }}
+                    className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Apply Now
+                  </button>
+                )}
+                {!selectedCompany.contacted && (
+                  <button
+                    onClick={() => {
+                      toggleContacted(selectedCompany.id);
+                      setSelectedCompany(null);
+                    }}
+                    className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Mark as Contacted
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setEditingCompany(selectedCompany);
+                    setSelectedCompany(null);
+                  }}
+                  className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
+                >
+                  Edit Company
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
