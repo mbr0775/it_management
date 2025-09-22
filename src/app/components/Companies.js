@@ -116,20 +116,14 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                         </div>
                       )}
                       
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
-                        {company.industry && <span className="whitespace-nowrap">{company.industry}</span>}
-                        {company.size && (
-                          <span className="whitespace-nowrap">
-                            {company.industry && ' • '}
-                            {company.size} employees
-                          </span>
-                        )}
-                        {company.founded && (
-                          <span className="whitespace-nowrap">
-                            {(company.industry || company.size) && ' • '}
-                            Founded {company.founded}
-                          </span>
-                        )}
+                      <div className="text-sm text-gray-600 mb-3 overflow-hidden">
+                        <span className="block truncate">
+                          {[
+                            company.industry,
+                            company.size ? `${company.size} employees` : null,
+                            company.founded ? `Founded ${company.founded}` : null
+                          ].filter(Boolean).join(' • ')}
+                        </span>
                       </div>
                       
                       {company.description && (
