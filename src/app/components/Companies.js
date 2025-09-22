@@ -47,6 +47,16 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
     }`;
   };
 
+  // Helper to get job type badge classes
+  const getJobTypeClasses = (jobType) => {
+    return `px-2 py-1 text-xs font-medium rounded-full ${
+      jobType === 'Remote' ? 'bg-green-100 text-green-800' :
+      jobType === 'Hybrid' ? 'bg-blue-100 text-blue-800' :
+      jobType === 'Onsite' ? 'bg-orange-100 text-orange-800' :
+      'bg-gray-100 text-gray-800'
+    }`;
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
@@ -87,12 +97,22 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                         </span>
                       </div>
 
-                      {/* Job Title Section */}
-                      {company.job_title && (
-                        <div className="mb-3">
-                          <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
-                            💼 {company.job_title}
-                          </span>
+                      {/* Job Title and Job Type Section */}
+                      {(company.job_title || company.job_type) && (
+                        <div className="mb-3 flex flex-wrap gap-2">
+                          {company.job_title && (
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                              💼 {company.job_title}
+                            </span>
+                          )}
+                          {company.job_type && (
+                            <span className={getJobTypeClasses(company.job_type)}>
+                              {company.job_type === 'Remote' && '🏠'}
+                              {company.job_type === 'Hybrid' && '🏢🏠'}
+                              {company.job_type === 'Onsite' && '🏢'}
+                              {' '}{company.job_type}
+                            </span>
+                          )}
                         </div>
                       )}
                       
@@ -252,11 +272,22 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                 </div>
               </div>
 
-              {selectedCompany.job_title && (
-                <div className="mb-6">
-                  <span className="inline-flex items-center px-4 py-2 text-base font-medium bg-indigo-100 text-indigo-800 rounded-full">
-                    💼 {selectedCompany.job_title}
-                  </span>
+              {/* Job Title and Job Type Section */}
+              {(selectedCompany.job_title || selectedCompany.job_type) && (
+                <div className="mb-6 flex flex-wrap gap-3">
+                  {selectedCompany.job_title && (
+                    <span className="inline-flex items-center px-4 py-2 text-base font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                      💼 {selectedCompany.job_title}
+                    </span>
+                  )}
+                  {selectedCompany.job_type && (
+                    <span className={`inline-flex items-center px-4 py-2 text-base font-medium rounded-full ${getJobTypeClasses(selectedCompany.job_type)}`}>
+                      {selectedCompany.job_type === 'Remote' && '🏠'}
+                      {selectedCompany.job_type === 'Hybrid' && '🏢🏠'}
+                      {selectedCompany.job_type === 'Onsite' && '🏢'}
+                      {' '}{selectedCompany.job_type}
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -293,6 +324,14 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                     <div className="flex items-center gap-2">
                       <span className="text-gray-500">Founded:</span>
                       <span>{selectedCompany.founded}</span>
+                    </div>
+                  )}
+                  {selectedCompany.job_type && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500">Job Type:</span>
+                      <span className={`px-2 py-1 text-sm rounded-full ${getJobTypeClasses(selectedCompany.job_type)}`}>
+                        {selectedCompany.job_type}
+                      </span>
                     </div>
                   )}
                   {selectedCompany.location && (

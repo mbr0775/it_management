@@ -22,6 +22,7 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               id: editingCompany.id,
               name: formData.get('name'),
               job_title: formData.get('jobTitle'),
+              job_type: formData.get('jobType'),
               industry: formData.get('industry'),
               size: formData.get('size'),
               founded: formData.get('founded'),
@@ -58,6 +59,20 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               placeholder="e.g. Software Developer, Data Analyst"
               className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
             />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Job Type</label>
+            <select 
+              name="jobType" 
+              defaultValue={editingCompany.job_type || ''} 
+              key={editingCompany.job_type} 
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
+            >
+              <option value="">Select job type</option>
+              <option value="Remote">Remote</option>
+              <option value="Onsite">Onsite</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-2">Industry</label>

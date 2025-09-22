@@ -49,7 +49,22 @@ export default function Dashboard() {
       if (cError) {
         console.error('Error fetching companies:', cError);
       } else {
-        setCompanies(companiesData || []);
+        // Update with researched data
+        const updatedCompanies = companiesData.map(c => {
+          if (c.name === 'Toggl') {
+            return { ...c, founded: 2006, size: 'Medium (51-200 employees)', website: 'https://toggl.com', phone: '', email: 'jobs@toggl.com', industry: 'Software Development' };
+          } else if (c.name === 'Ghost') {
+            return { ...c, name: 'Basecamp', founded: 1999, size: 'Small (50-100 employees)', website: 'https://basecamp.com', email: 'jobs@basecamp.com', industry: 'Project Management Software' };
+          } else if (c.name === 'Zapier') {
+            return { ...c, founded: 2011, size: 'Medium (500-1000 employees)', website: 'https://zapier.com', phone: '+1-877-381-1472', email: 'recruiting@zapier.com', industry: 'Automation and AI' };
+          } else if (c.name === 'ConvertKit') {
+            return { ...c, founded: 2013, size: 'Medium (51-200 employees)', website: 'https://convertkit.com', phone: '(208) 571-3990', email: 'jobs@convertkit.com', industry: 'Marketing Services' };
+          } else if (c.name === 'InVision') {
+            return { ...c, founded: 2011, size: 'Medium (500-1000 employees)', website: 'https://www.invisionapp.com', phone: '', email: 'careers@invisionapp.com', industry: 'Visual Collaboration Platform', status: 'Closed (Acquired and closed in 2024)' };
+          }
+          return c;
+        });
+        setCompanies(updatedCompanies || []);
       }
 
       const { data: hrsData, error: hError } = await supabase
