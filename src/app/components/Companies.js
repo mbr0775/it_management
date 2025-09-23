@@ -57,6 +57,67 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
     }`;
   };
 
+  // Function to export all companies to TXT file
+  const exportToTxt = () => {
+    const content = filteredCompanies.map(company => `
+Company: ${company.name || 'N/A'}
+Status: ${company.status || 'N/A'}
+Job Title: ${company.job_title || 'N/A'}
+Job Type: ${company.job_type || 'N/A'}
+Industry: ${company.industry || 'N/A'}
+Size: ${company.size ? `${company.size} employees` : 'N/A'}
+Founded: ${company.founded || 'N/A'}
+Description: ${company.description || 'N/A'}
+Job Description: ${company.job_description || 'N/A'}
+Location: ${company.location || 'N/A'}
+Website: ${company.website || 'N/A'}
+Phone: ${company.phone || 'N/A'}
+Email: ${company.email || 'N/A'}
+Resume Deadline: ${formatDate(company.resume_deadline_date) || 'N/A'}
+Applied: ${company.applied ? 'Yes' : 'No'}
+Contacted: ${company.contacted ? 'Yes' : 'No'}
+---------------------------
+    `).join('\n');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'companies.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Function to export single company to TXT file
+  const exportSingleToTxt = (company) => {
+    const content = `
+Company: ${company.name || 'N/A'}
+Status: ${company.status || 'N/A'}
+Job Title: ${company.job_title || 'N/A'}
+Job Type: ${company.job_type || 'N/A'}
+Industry: ${company.industry || 'N/A'}
+Size: ${company.size ? `${company.size} employees` : 'N/A'}
+Founded: ${company.founded || 'N/A'}
+Description: ${company.description || 'N/A'}
+Job Description: ${company.job_description || 'N/A'}
+Location: ${company.location || 'N/A'}
+Website: ${company.website || 'N/A'}
+Phone: ${company.phone || 'N/A'}
+Email: ${company.email || 'N/A'}
+Resume Deadline: ${formatDate(company.resume_deadline_date) || 'N/A'}
+Applied: ${company.applied ? 'Yes' : 'No'}
+Contacted: ${company.contacted ? 'Yes' : 'No'}
+    `;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(company.name || 'company').replace(/\s+/g, '_')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
@@ -65,13 +126,21 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Companies</h1>
             <p className="text-gray-600">Manage IT companies offering job opportunities</p>
           </div>
-          <button 
-            onClick={() => setShowAddCompany(true)} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium w-full sm:w-auto"
-          >
-            <span className="text-lg">+</span>
-            Add Company
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button 
+              onClick={() => setShowAddCompany(true)} 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium w-full sm:w-auto"
+            >
+              <span className="text-lg">+</span>
+              Add Company
+            </button>
+            <button 
+              onClick={exportToTxt} 
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium w-full sm:w-auto"
+            >
+              Export to TXT
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -427,6 +496,12 @@ export default function Companies({ filteredCompanies, toggleApplied, toggleCont
                   className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
                 >
                   Edit Company
+                </button>
+                <button
+                  onClick={() => exportSingleToTxt(selectedCompany)}
+                  className="flex-1 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Export to TXT
                 </button>
               </div>
             </div>
