@@ -1,6 +1,73 @@
 'use client';
+import { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+// Supabase client setup
+const supabaseUrl = 'https://orxbfzrudpsdqoiolmri.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeGJmenJ1ZHBzZHFvaW9sbXJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzkwNzEsImV4cCI6MjA3NDA1NTA3MX0.OZVNJgfdEazDB9H7XRgN4ESUs3XdX0k2uLKK-HOK1jc';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function EditCompanyModal({ editCompany, editingCompany, setEditingCompany }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const formData = new FormData(e.target);
+      
+      // Prepare the updated company data
+      const updatedCompanyData = {
+        name: formData.get('name'),
+        job_title: formData.get('jobTitle') || null,
+        job_type: formData.get('jobType') || null,
+        industry: formData.get('industry') || null,
+        size: formData.get('size') || null,
+        founded: formData.get('founded') || null,
+        location: formData.get('location') || null,
+        website: formData.get('website') || null,
+        phone: formData.get('phone') || null,
+        email: formData.get('email') || null,
+        status: formData.get('status'),
+        job_description: formData.get('description') || null,
+        resume_deadline_date: formData.get('resumeDeadline') || null,
+      };
+
+      // Update data in Supabase
+      const { data, error: supabaseError } = await supabase
+        .from('companies')
+        .update(updatedCompanyData)
+        .eq('id', editingCompany.id)
+        .select();
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      console.log('Company updated successfully:', data);
+      
+      // Call the parent callback with the updated company data
+      if (editCompany && data && data.length > 0) {
+        editCompany(data[0]);
+      }
+
+      // Close modal
+      setEditingCompany(null);
+      
+      // Optional: Show success message
+      alert('Company updated successfully!');
+
+    } catch (err) {
+      console.error('Error updating company:', err);
+      setError(err.message || 'Failed to update company. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-indigo-800/30 backdrop-blur-lg flex items-center justify-center z-50" style={{
       backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:0.3" /><stop offset="50%" style="stop-color:%23764ba2;stop-opacity:0.2" /><stop offset="100%" style="stop-color:%23f093fb;stop-opacity:0.3" /></linearGradient></defs><rect width="100%" height="100%" fill="url(%23grad1)"/><circle cx="200" cy="200" r="150" fill="%23ffffff" opacity="0.1"/><circle cx="800" cy="300" r="100" fill="%23ffffff" opacity="0.05"/><circle cx="300" cy="700" r="120" fill="%23ffffff" opacity="0.08"/><circle cx="700" cy="800" r="80" fill="%23ffffff" opacity="0.06"/></svg>')`,
@@ -10,45 +77,43 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
       <div className="bg-white p-6 rounded-lg shadow-lg w-[700px] max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-lg text-black">Edit Company</h2>
-          <button onClick={() => setEditingCompany(null)} className="text-gray-500 hover:text-gray-700 text-xl">
+          <button 
+            onClick={() => setEditingCompany(null)} 
+            className="text-gray-500 hover:text-gray-700 text-xl"
+            disabled={loading}
+          >
             ×
           </button>
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const updatedCompany = {
-              id: editingCompany.id,
-              name: formData.get('name'),
-              job_title: formData.get('jobTitle'),
-              job_type: formData.get('jobType'),
-              industry: formData.get('industry'),
-              size: formData.get('size'),
-              founded: formData.get('founded'),
-              location: formData.get('location'),
-              website: formData.get('website'),
-              phone: formData.get('phone'),
-              email: formData.get('email'),
-              status: formData.get('status'),
-              job_description: formData.get('description'),
-              resume_deadline_date: formData.get('resumeDeadline'),
-              contacted: editingCompany.contacted,
-              applied: editingCompany.applied,
-              created_at: editingCompany.created_at,
-            };
-            editCompany(updatedCompany);
-            setEditingCompany(null);
-          }}
-          className="grid grid-cols-2 gap-4"
-        >
+
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Loading indicator */}
+        {loading && (
+          <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded flex items-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Updating company...
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-gray-700 font-medium mb-2">Company Name *</label>
             <input 
               name="name" 
               defaultValue={editingCompany.name} 
               required 
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={255}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -57,7 +122,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="jobTitle" 
               defaultValue={editingCompany.job_title || ''} 
               placeholder="e.g. Software Developer, Data Analyst"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={255}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -66,12 +133,13 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="jobType" 
               defaultValue={editingCompany.job_type || ''} 
               key={editingCompany.job_type} 
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
-              <option value="">Select job type</option>
-              <option value="Remote">Remote</option>
-              <option value="Onsite">Onsite</option>
-              <option value="Hybrid">Hybrid</option>
+              <option value="" className="text-gray-400">Select job type</option>
+              <option value="Remote" className="text-gray-900">Remote</option>
+              <option value="Onsite" className="text-gray-900">Onsite</option>
+              <option value="Hybrid" className="text-gray-900">Hybrid</option>
             </select>
           </div>
           <div>
@@ -80,55 +148,62 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="industry" 
               defaultValue={editingCompany.industry || ''} 
               key={editingCompany.industry} 
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
-              <option value="">Select industry</option>
-              <option value="Aerospace & Defense">Aerospace & Defense</option>
-              <option value="Agriculture & Food">Agriculture & Food</option>
-              <option value="Automotive">Automotive</option>
-              <option value="Aviation">Aviation</option>
-              <option value="Banking & Finance">Banking & Finance</option>
-              <option value="Biotechnology">Biotechnology</option>
-              <option value="Construction & Real Estate">Construction & Real Estate</option>
-              <option value="Consulting">Consulting</option>
-              <option value="E-commerce">E-commerce</option>
-              <option value="Education">Education</option>
-              <option value="Energy & Utilities">Energy & Utilities</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Entertainment & Media">Entertainment & Media</option>
-              <option value="Financial Services">Financial Services</option>
-              <option value="Government & Public Sector">Government & Public Sector</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Hospitality & Tourism">Hospitality & Tourism</option>
-              <option value="Insurance">Insurance</option>
-              <option value="Internet & Technology">Internet & Technology</option>
-              <option value="Legal Services">Legal Services</option>
-              <option value="Logistics & Transportation">Logistics & Transportation</option>
-              <option value="Manufacturing">Manufacturing</option>
-              <option value="Marketing & Advertising">Marketing & Advertising</option>
-              <option value="Mining & Metals">Mining & Metals</option>
-              <option value="Non-profit">Non-profit</option>
-              <option value="Oil & Gas">Oil & Gas</option>
-              <option value="Pharmaceuticals">Pharmaceuticals</option>
-              <option value="Retail">Retail</option>
-              <option value="Software Development">Software Development</option>
-              <option value="Sports & Recreation">Sports & Recreation</option>
-              <option value="Technology Consulting">Technology Consulting</option>
-              <option value="Telecommunications">Telecommunications</option>
-              <option value="Textiles & Apparel">Textiles & Apparel</option>
+              <option value="" className="text-gray-400">Select industry</option>
+              <option value="Aerospace & Defense" className="text-gray-900">Aerospace & Defense</option>
+              <option value="Agriculture & Food" className="text-gray-900">Agriculture & Food</option>
+              <option value="Automotive" className="text-gray-900">Automotive</option>
+              <option value="Aviation" className="text-gray-900">Aviation</option>
+              <option value="Banking & Finance" className="text-gray-900">Banking & Finance</option>
+              <option value="Biotechnology" className="text-gray-900">Biotechnology</option>
+              <option value="Construction & Real Estate" className="text-gray-900">Construction & Real Estate</option>
+              <option value="Consulting" className="text-gray-900">Consulting</option>
+              <option value="E-commerce" className="text-gray-900">E-commerce</option>
+              <option value="Education" className="text-gray-900">Education</option>
+              <option value="Energy & Utilities" className="text-gray-900">Energy & Utilities</option>
+              <option value="Engineering" className="text-gray-900">Engineering</option>
+              <option value="Entertainment & Media" className="text-gray-900">Entertainment & Media</option>
+              <option value="Financial Services" className="text-gray-900">Financial Services</option>
+              <option value="Government & Public Sector" className="text-gray-900">Government & Public Sector</option>
+              <option value="Healthcare" className="text-gray-900">Healthcare</option>
+              <option value="Hospitality & Tourism" className="text-gray-900">Hospitality & Tourism</option>
+              <option value="Insurance" className="text-gray-900">Insurance</option>
+              <option value="Internet & Technology" className="text-gray-900">Internet & Technology</option>
+              <option value="Legal Services" className="text-gray-900">Legal Services</option>
+              <option value="Logistics & Transportation" className="text-gray-900">Logistics & Transportation</option>
+              <option value="Manufacturing" className="text-gray-900">Manufacturing</option>
+              <option value="Marketing & Advertising" className="text-gray-900">Marketing & Advertising</option>
+              <option value="Mining & Metals" className="text-gray-900">Mining & Metals</option>
+              <option value="Non-profit" className="text-gray-900">Non-profit</option>
+              <option value="Oil & Gas" className="text-gray-900">Oil & Gas</option>
+              <option value="Pharmaceuticals" className="text-gray-900">Pharmaceuticals</option>
+              <option value="Retail" className="text-gray-900">Retail</option>
+              <option value="Software Development" className="text-gray-900">Software Development</option>
+              <option value="Sports & Recreation" className="text-gray-900">Sports & Recreation</option>
+              <option value="Technology Consulting" className="text-gray-900">Technology Consulting</option>
+              <option value="Telecommunications" className="text-gray-900">Telecommunications</option>
+              <option value="Textiles & Apparel" className="text-gray-900">Textiles & Apparel</option>
             </select>
           </div>
           <div>
             <label className="block text-gray-700 font-medium mb-2">Company Size</label>
-            <select name="size" defaultValue={editingCompany.size || ''} key={editingCompany.size} className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
-              <option value="">Select company size</option>
-              <option value="1-10">1-10</option>
-              <option value="11-50">11-50</option>
-              <option value="51-200">51-200</option>
-              <option value="201-500">201-500</option>
-              <option value="501-1000">501-1000</option>
-              <option value="1001-5000">1001-5000</option>
-              <option value="5000+">5000+</option>
+            <select 
+              name="size" 
+              defaultValue={editingCompany.size || ''} 
+              key={editingCompany.size} 
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="" className="text-gray-400">Select company size</option>
+              <option value="1-10" className="text-gray-900">1-10</option>
+              <option value="11-50" className="text-gray-900">11-50</option>
+              <option value="51-200" className="text-gray-900">51-200</option>
+              <option value="201-500" className="text-gray-900">201-500</option>
+              <option value="501-1000" className="text-gray-900">501-1000</option>
+              <option value="1001-5000" className="text-gray-900">1001-5000</option>
+              <option value="5000+" className="text-gray-900">5000+</option>
             </select>
           </div>
           <div>
@@ -137,7 +212,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="founded" 
               defaultValue={editingCompany.founded || ''} 
               placeholder="e.g. 2020"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={10}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -146,7 +223,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="location" 
               defaultValue={editingCompany.location || ''} 
               placeholder="City, State/Country"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={255}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -156,7 +235,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               defaultValue={editingCompany.website || ''} 
               type="url"
               placeholder="https://company.com"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={500}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -166,7 +247,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               defaultValue={editingCompany.phone || ''} 
               type="tel"
               placeholder="+974-xxxx-xxxx"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={50}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -176,7 +259,9 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               defaultValue={editingCompany.email || ''} 
               type="email"
               placeholder="hr@company.com"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              maxLength={255}
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -185,19 +270,27 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               name="resumeDeadline" 
               defaultValue={editingCompany.resume_deadline_date || ''} 
               type="date"
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700"
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div className="col-span-2">
             <label className="block text-gray-700 font-medium mb-2">Status *</label>
-            <select name="status" defaultValue={editingCompany.status || ''} key={editingCompany.status} required className="w-full border border-gray-300 p-2 rounded-md text-gray-700">
-              <option value="">Select status</option>
-              <option value="Active">Active</option>
-              <option value="Partnered">Partnered</option>
-              <option value="Prospective">Prospective</option>
-              <option value="Applied">Applied</option>
-              <option value="Interviewed">Interviewed</option>
-              <option value="Not Interested">Not Interested</option>
+            <select 
+              name="status" 
+              defaultValue={editingCompany.status || ''} 
+              key={editingCompany.status} 
+              required
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="" className="text-gray-400">Select status</option>
+              <option value="Active" className="text-gray-900">Active</option>
+              <option value="Partnered" className="text-gray-900">Partnered</option>
+              <option value="Prospective" className="text-gray-900">Prospective</option>
+              <option value="Applied" className="text-gray-900">Applied</option>
+              <option value="Interviewed" className="text-gray-900">Interviewed</option>
+              <option value="Not Interested" className="text-gray-900">Not Interested</option>
             </select>
           </div>
           <div className="col-span-2">
@@ -207,17 +300,37 @@ export default function EditCompanyModal({ editCompany, editingCompany, setEditi
               defaultValue={editingCompany.job_description || ''} 
               rows="3" 
               placeholder="Brief description of the company..."
-              className="w-full border border-gray-300 p-2 rounded-md text-gray-700 placeholder:text-gray-400"
+              disabled={loading}
+              className="w-full border border-gray-300 p-2 rounded-md text-gray-900 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <div className="col-span-2 flex justify-end space-x-2">
-            <button type="button" onClick={() => setEditingCompany(null)} className="bg-gray-500 text-white px-4 py-2 rounded w-full sm:w-auto">
+            <button 
+              type="button" 
+              onClick={() => setEditingCompany(null)} 
+              disabled={loading}
+              className="bg-gray-500 text-white px-4 py-2 rounded w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               Cancel
             </button>
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded w-full sm:w-auto">
-              Save Changes
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="bg-blue-600 text-white px-4 py-2 rounded w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Updating...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
-            </div>
+          </div>
         </form>
       </div>
     </div>

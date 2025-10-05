@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase client setup
-const supabaseUrl = 'https://vijkyxwhfijdxmeizwzw.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpamt5eHdoZmlqZHhtZWl6d3p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczMjI1NjUsImV4cCI6MjA3Mjg5ODU2NX0.9usmCPahHk2qCQezIKWUz4gQ3zYsFJ4vALu9WveuaO4';
+const supabaseUrl = 'https://orxbfzrudpsdqoiolmri.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeGJmenJ1ZHBzZHFvaW9sbXJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzkwNzEsImV4cCI6MjA3NDA1NTA3MX0.OZVNJgfdEazDB9H7XRgN4ESUs3XdX0k2uLKK-HOK1jc';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function AddHRModal({ addHR, setShowAddHR, companies }) {
